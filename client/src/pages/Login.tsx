@@ -46,7 +46,18 @@ export default function Login() {
               Socratic
             </span>
             <span className="lp-nav-byline" style={{ fontSize: 12, color: C.textDim }}>
-              a tool by{" "}
+              an{" "}
+              <a
+                href="https://github.com/nberk/socratic"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: C.textMuted, textDecoration: "underline", textUnderlineOffset: 2, textDecorationColor: C.border }}
+                onMouseEnter={e => (e.currentTarget.style.color = C.textSecondary)}
+                onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)}
+              >
+                open source
+              </a>
+              {" "}tool by{" "}
               <a
                 href="https://nick-berk.com"
                 target="_blank"
@@ -55,7 +66,7 @@ export default function Login() {
                 onMouseEnter={e => (e.currentTarget.style.color = C.textSecondary)}
                 onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)}
               >
-                Nick Berk
+                nick berk
               </a>
             </span>
           </div>
@@ -181,7 +192,18 @@ export default function Login() {
       {/* Footer */}
       <footer style={{ borderTop: `1px solid ${C.border}`, padding: "24px", textAlign: "center" }}>
         <p style={{ fontFamily: C.serif, fontSize: "clamp(14px, 1.5vw, 18px)", fontWeight: 600, color: C.textDim, letterSpacing: "0.01em", margin: 0 }}>
-          A tool by{" "}
+          An{" "}
+          <a
+            href="https://github.com/nberk/socratic"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: C.textMuted, textDecoration: "underline", textUnderlineOffset: 2, textDecorationColor: C.borderLight }}
+            onMouseEnter={e => (e.currentTarget.style.color = C.textSecondary)}
+            onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)}
+          >
+            open source
+          </a>
+          {" "}tool by{" "}
           <a
             href="https://nick-berk.com"
             target="_blank"
@@ -190,7 +212,7 @@ export default function Login() {
             onMouseEnter={e => (e.currentTarget.style.color = C.textSecondary)}
             onMouseLeave={e => (e.currentTarget.style.color = C.textMuted)}
           >
-            Nick Berk
+            nick berk
           </a>
           .
         </p>
