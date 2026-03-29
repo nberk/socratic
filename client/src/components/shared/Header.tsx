@@ -13,31 +13,9 @@ export default function Header() {
   return (
     <header className="border-b border-zinc-200 bg-white">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-        <div className="flex flex-col">
-          <Link to="/" className="text-lg font-semibold text-zinc-900 leading-tight">
-            Socratic
-          </Link>
-          <span className="text-xs text-zinc-400">
-            an{" "}
-            <a
-              href="https://github.com/nberk/socratic"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-zinc-600 transition-colors"
-            >
-              open source
-            </a>
-            {" "}tool by{" "}
-            <a
-              href="https://nick-berk.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-zinc-600 transition-colors"
-            >
-              nick berk
-            </a>
-          </span>
-        </div>
+        <Link to="/" className="text-lg font-semibold text-zinc-900">
+          Socratic
+        </Link>
         <nav className="flex items-center gap-1">
           {navItems.map((item) => (
             <Link
