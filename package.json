@@ -1,0 +1,74 @@
+{
+  "name": "learning_app",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "description": "Personal learning tool powered by Claude AI — Socratic teaching + spaced repetition (FSRS)",
+  "author": "Nicholas Berk",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nberk/socratic.git"
+  },
+  "homepage": "https://github.com/nberk/socratic",
+  "keywords": [
+    "learning",
+    "spaced-repetition",
+    "fsrs",
+    "socratic-method",
+    "claude-ai",
+    "anthropic"
+  ],
+  "scripts": {
+    "dev": "bun run dev:server & bun run dev:client",
+    "dev:server": "bun --watch server/index.ts",
+    "dev:client": "bun run --cwd client vite",
+    "build": "bun run --cwd client vite build",
+    "start": "NODE_ENV=production bun server/index.ts",
+    "db:generate": "bunx drizzle-kit generate",
+    "db:migrate": "bunx drizzle-kit migrate",
+    "db:push": "bunx drizzle-kit push",
+    "db:studio": "bunx drizzle-kit studio",
+    "db:reset-dev": "neonctl branches reset dev --parent --project-id $NEON_PROJECT_ID",
+    "deploy": "bash scripts/deploy.sh",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:unit": "vitest run server/lib/",
+    "test:integration": "vitest run server/routes/ server/db/"
+  },
+  "devDependencies": {
+    "@sentry/vite-plugin": "^5.1.1",
+    "@types/bun": "latest",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitest/coverage-v8": "^4.0.18",
+    "drizzle-kit": "^0.31.9",
+    "vitest": "^4.0.18"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.74.0",
+    "@neondatabase/serverless": "^1.0.2",
+    "@sentry/node": "^10.40.0",
+    "@sentry/react": "^10.40.0",
+    "@tailwindcss/vite": "^4.2.0",
+    "@vitejs/plugin-react": "^5.1.4",
+    "@workos-inc/node": "^8.5.0",
+    "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.1",
+    "hono": "^4.12.0",
+    "postgres": "^3.4.8",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-markdown": "^10.1.0",
+    "react-router": "^7.13.0",
+    "remark-gfm": "^4.0.1",
+    "tailwindcss": "^4.2.0",
+    "ts-fsrs": "^5.2.3",
+    "vite": "^7.3.1",
+    "zod": "^4.3.6"
+  }
+}
