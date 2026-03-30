@@ -25,6 +25,24 @@ const btn: React.CSSProperties = {
   transition: "opacity 0.15s",
 };
 
+const btnOutline: React.CSSProperties = {
+  background: "transparent",
+  color: C.textSecondary,
+  border: `1px solid ${C.border}`,
+  borderRadius: "8px",
+  padding: "13px 32px",
+  fontSize: "13px",
+  fontWeight: 600,
+  cursor: "pointer",
+  letterSpacing: "0.03em",
+  fontFamily: C.sans,
+  textDecoration: "none",
+  transition: "border-color 0.15s, color 0.15s",
+  display: "inline-block",
+};
+
+const WAITLIST_URL = "https://tally.so/r/WOPxgQ";
+
 export default function Login() {
   const signIn = () => {
     window.location.href = "/api/auth/login";
@@ -70,14 +88,26 @@ export default function Login() {
               </a>
             </span>
           </div>
-          <button
-            onClick={signIn}
-            style={{ ...btn, padding: "9px 22px", fontSize: 13 }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = "0.85")}
-            onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
-          >
-            Sign in →
-          </button>
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <a
+              href={WAITLIST_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ ...btnOutline, padding: "9px 18px", fontSize: 13 }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = C.borderLight; e.currentTarget.style.color = C.textPrimary; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textSecondary; }}
+            >
+              Join waitlist
+            </a>
+            <button
+              onClick={signIn}
+              style={{ ...btn, padding: "9px 22px", fontSize: 13 }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = "0.85")}
+              onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
+            >
+              Sign in →
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -96,9 +126,21 @@ export default function Login() {
           A personal tutor that teaches the way Socrates did — by asking the right
           questions. Then locks in what you learn with science-backed spaced repetition.
         </p>
-        <button onClick={signIn} style={btn} onMouseEnter={e => (e.currentTarget.style.opacity = "0.85")} onMouseLeave={e => (e.currentTarget.style.opacity = "1")}>
-          Log in
-        </button>
+        <div style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap" }}>
+          <button onClick={signIn} style={btn} onMouseEnter={e => (e.currentTarget.style.opacity = "0.85")} onMouseLeave={e => (e.currentTarget.style.opacity = "1")}>
+            Log in
+          </button>
+          <a
+            href={WAITLIST_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={btnOutline}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = C.borderLight; e.currentTarget.style.color = C.textPrimary; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textSecondary; }}
+          >
+            Join waitlist →
+          </a>
+        </div>
       </section>
 
       {/* How it works */}
