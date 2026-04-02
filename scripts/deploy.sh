@@ -12,6 +12,13 @@ if [ -f .env ]; then
   set +a
 fi
 
+echo "→ Type checking..."
+bunx tsc --noEmit
+
+echo "→ Running tests..."
+bun test
+
+echo "→ Deploying..."
 fly deploy \
   --build-arg SENTRY_RELEASE="$(git rev-parse HEAD)" \
   --build-arg VITE_SENTRY_DSN="${VITE_SENTRY_DSN:-}" \
