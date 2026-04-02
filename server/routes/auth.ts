@@ -52,6 +52,10 @@ if (!isWorkOSMode) {
         code,
         session: { sealSession: true, cookiePassword },
       });
+      if (!result.sealedSession) {
+        console.error("[auth] callback succeeded but sealedSession is missing");
+        return c.redirect(`${home}?error=auth_failed`);
+      }
       sealedSession = result.sealedSession;
       workosUser = result.user;
     } catch (err) {

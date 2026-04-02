@@ -33,8 +33,8 @@ export function trackUsage(params: {
   endpoint: string;
   inputTokens: number;
   outputTokens: number;
-  topicId?: number | null;
-  lessonId?: number | null;
+  topicId?: string | null;
+  lessonId?: string | null;
 }): void {
   const model = params.model;
   const costMillicents = calculateCostMillicents(model, params.inputTokens, params.outputTokens);
