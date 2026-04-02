@@ -45,7 +45,7 @@ export async function deleteTopic(id: string, userId: string) {
   // Note: not using db.transaction() because neon-http driver doesn't support it.
   // Sequential deletes are acceptable for a single-user app; partial deletes leave
   // orphaned rows but no corruption, and a retry will clean them up.
-
+  try {
   // Verify ownership before deleting anything
   const topic = await db.query.topics.findFirst({
     where: and(eq(topics.id, id), eq(topics.userId, userId)),
@@ -97,6 +97,9 @@ export async function deleteTopic(id: string, userId: string) {
     .where(and(eq(topics.id, id), eq(topics.userId, userId)))
     .returning();
   return deleted;
+  } catch (err) {
+    throw new Error(`Failed to delete topic ${id}: ${err}`);
+  }
 }
 
 export async function createTopic(userId: string, title: string, description?: string) {
@@ -214,6 +217,7 @@ export async function saveConcepts(
   // Each concept+card pair is inserted sequentially. A partial failure leaves
   // orphaned concepts without cards, but the next section_complete will not
   // re-insert already-saved concepts (they have unique names per topic).
+  try {
   const now = new Date();
   const savedConcepts = [];
 
@@ -250,6 +254,9 @@ export async function saveConcepts(
   }
 
   return savedConcepts;
+  } catch (err) {
+    throw new Error(`Failed to save concepts for lesson ${lessonId}: ${err}`);
+  }
 }
 
 export async function listConcepts(userId: string, topicId?: string) {

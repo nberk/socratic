@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router";
 import Header from "./components/shared/Header";
@@ -38,8 +39,20 @@ export default function App() {
 
   useEffect(() => {
     fetch("/api/auth/me", { credentials: "include" })
-      .then((r) => setAuthState(r.ok ? "authenticated" : "unauthenticated"))
-      .catch(() => setAuthState("unauthenticated"));
+      .then(async (r) => {
+        if (r.ok) {
+          const data = await r.json();
+          Sentry.setUser({ id: data.user.id, email: data.user.email });
+          setAuthState("authenticated");
+        } else {
+          Sentry.setUser(null);
+          setAuthState("unauthenticated");
+        }
+      })
+      .catch(() => {
+        Sentry.setUser(null);
+        setAuthState("unauthenticated");
+      });
   }, []);
 
   if (authState === "loading") return null;

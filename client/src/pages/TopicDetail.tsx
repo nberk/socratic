@@ -28,13 +28,19 @@ export default function TopicDetail() {
     if (loading || !topic) return;
     const lesson = topic.lessons?.[0];
     if (!lesson) {
+      let cancelled = false;
       setStartingLesson(true);
       createLesson(topic.id)
-        .then((newLesson) => navigate(`/lessons/${newLesson.id}`, { replace: true }))
+        .then((newLesson) => {
+          if (!cancelled) navigate(`/lessons/${newLesson.id}`, { replace: true });
+        })
         .catch((err) => {
-          setStartingLesson(false);
-          setError(err instanceof Error ? err.message : "Failed to start lesson.");
+          if (!cancelled) {
+            setStartingLesson(false);
+            setError(err instanceof Error ? err.message : "Failed to start lesson.");
+          }
         });
+      return () => { cancelled = true; };
     } else if (lesson.status !== "completed") {
       navigate(`/lessons/${lesson.id}`, { replace: true });
     }

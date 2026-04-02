@@ -13,6 +13,7 @@ import conceptsRoutes from "./routes/concepts";
 import usageRoutes from "./routes/usage";
 import authRoutes from "./routes/auth";
 import { authMiddleware, type LocalUser } from "./lib/auth";
+import { rateLimiter } from "hono-rate-limiter";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -42,11 +43,19 @@ if (process.env.DEV_BYPASS_TOKEN && !isProd) {
 const dbUrl = process.env.DATABASE_URL!;
 console.log(`Database: ${dbUrl.includes("neon.tech") ? "Neon (HTTP)" : "Local Postgres"}`);
 
-const app = new Hono<{ Variables: { user: LocalUser } }>();
+const app = new Hono<{ Variables: { user: LocalUser; requestId: string } }>();
 
 // ─── Middleware ───────────────────────────────────────
 
 app.use("*", logger());
+
+// Request ID — generated once per request, threaded through logs and Sentry
+app.use("*", async (c, next) => {
+  const requestId = crypto.randomUUID();
+  c.set("requestId", requestId);
+  c.header("X-Request-ID", requestId);
+  await next();
+});
 
 // Security headers
 app.use("*", async (c, next) => {
@@ -78,6 +87,22 @@ app.route("/api/auth", authRoutes);
 // All routes below this line require authentication
 app.use("/api/*", authMiddleware);
 
+// Rate limiting — keyed by user ID (post-auth, so identity is known)
+type AppEnv = { Variables: { user: LocalUser; requestId: string } };
+const generalLimiter = rateLimiter<AppEnv>({
+  windowMs: 60 * 1000,
+  limit: 120,
+  keyGenerator: (c) => c.get("user").id,
+});
+const claudeLimiter = rateLimiter<AppEnv>({
+  windowMs: 60 * 1000,
+  limit: 20,
+  keyGenerator: (c) => c.get("user").id,
+});
+app.use("/api/*", generalLimiter);
+app.use("/api/chat", claudeLimiter);
+app.use("/api/review/grade", claudeLimiter);
+
 app.route("/api/topics", topicsRoutes);
 app.route("/api/lessons", lessonsRoutes);
 app.route("/api/chat", chatRoutes);
@@ -106,7 +131,8 @@ app.notFound((c) => {
 });
 
 app.onError((err, c) => {
-  console.error(`[${c.req.method} ${c.req.path}]`, err);
+  const requestId = c.get("requestId") ?? "unknown";
+  console.error(`[${requestId}] ${c.req.method} ${c.req.path}`, err);
 
   const msg = err.message ?? "";
   const isDbDown =
@@ -123,9 +149,12 @@ app.onError((err, c) => {
   }
 
   // Report unexpected errors to Sentry (this is the safety net for routes without explicit try/catch)
-  Sentry.captureException(err);
+  Sentry.withScope((scope) => {
+    scope.setTag("request_id", requestId);
+    Sentry.captureException(err);
+  });
 
-  return c.json({ error: "Internal server error" }, 500);
+  return c.json({ error: "Internal server error", requestId }, 500);
 });
 
 // Captures any error that reaches Hono's error layer (unhandled crashes, middleware failures).
